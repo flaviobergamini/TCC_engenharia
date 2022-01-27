@@ -1,11 +1,14 @@
+from distutils.command.upload import upload
 from django.db import models
 from uuid import uuid4
 
 from drugstore.models import Drugstore
 
+def upload_image_prescription(instance, filename):
+    return f'{instance.idOrder}-{filename}'
+
 class DrugstoreOrder(models.Model):
     idOrder = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    link_prescription = models.CharField(max_length=45)
     state = models.CharField(max_length=20, blank=True)
     city = models.CharField(max_length=45, blank=True)
     street = models.CharField(max_length=45, blank=True)
@@ -13,3 +16,4 @@ class DrugstoreOrder(models.Model):
     number = models.IntegerField(blank=True)
     cep = models.CharField(max_length=10, blank=True)
     drugstore_cnpj = models.ForeignKey(Drugstore, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=upload_image_prescription, blank=True, null=True)
